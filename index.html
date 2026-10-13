@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Offline PCIe x16 card-edge pinout and repair reference with physically mirrored A/B views.">
+  <title>PCIe x16 · Pinout & Repair Assistant</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="data/pcie-x16-pins.js"></script>
+  <script defer src="js/search.js"></script><script defer src="js/connector.js"></script>
+  <script defer src="js/self-test.js"></script><script defer src="js/app.js"></script>
+</head>
+<body>
+  <header class="header"><a class="brand" href="index.html"><span class="brand-icon">↔</span><span>PCIe <b>x16</b><small>PINOUT & REPAIR ASSISTANT</small></span></a><button id="help-open">Help / About <span aria-hidden="true">↗</span></button></header>
+  <main>
+    <div class="intro"><div><p class="eyebrow">HARDWARE WORKBENCH / 164 CONTACTS</p><h1>Know every contact.</h1><p class="muted">Explore the connector. Trace a signal. Check your orientation.</p></div><span class="offline"><i></i> Offline ready · No dependencies</span></div>
+    <section class="toolbar" aria-label="Connector controls">
+      <div><span class="control-label">VIEW OF ADD-IN CARD</span><div class="segmented"><button id="front" aria-pressed="true">Front <small>Component · B</small></button><button id="back" aria-pressed="false">Back <small>Solder · A</small></button><button id="both" aria-pressed="false">Both A/B <small>Two physical views</small></button></div></div>
+      <div><span class="control-label">DETAIL LEVEL</span><div class="segmented"><button id="basic" aria-pressed="false">Basic</button><button id="repair" aria-pressed="true">Repair mode</button></div></div>
+      <label class="profile control-label">PIN MAP<select id="profile"><option value="modern">CEM 4.0 v0.9 (draft map)</option><option value="legacy">CEM 1.1 (legacy)</option></select></label>
+    </section>
+    <div class="workspace">
+      <section class="explorer" aria-label="Pin explorer">
+        <div class="search-row"><label class="search-label"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search pins, signals or groups…" aria-label="Search pins, signals or groups" autocomplete="off"></label><button id="reset">Reset filters</button></div>
+        <div id="filters" class="filters" role="group" aria-label="Signal group filters"></div>
+        <div class="lane-row"><span class="control-label">ISOLATE A LANE</span><select id="lane" aria-label="Select PCIe lane"><option value="">All lanes</option></select><span id="match-count" class="muted" role="status"></span></div>
+        <section id="focus-card" class="focus-card" aria-label="Magnified contact neighborhood">
+          <div class="focus-heading"><div><span class="eyebrow">CONTACT CLOSE-UP</span><h2 id="focus-title">Select a contact</h2></div><button id="focus-reveal">Locate</button></div>
+          <p id="focus-orientation" class="muted">Tap a connector contact or search result to magnify its neighbors.</p>
+          <div id="focus-mount"></div>
+          <div class="focus-navigation"><button id="focus-prev">← Previous</button><span id="focus-position"></span><button id="focus-next">Next →</button></div>
+        </section>
+        <div class="connector-card">
+          <div class="card-heading"><div><span class="eyebrow">CARD EDGE / SCHEMATIC VIEW</span><h2 id="view-title">Component side <span>B</span></h2></div><label class="zoom">Zoom <input id="zoom" type="range" min="1" max="3" step="0.25" value="1" aria-label="Connector zoom"><output id="zoom-value">1×</output></label></div>
+          <p id="orientation" class="orientation"></p>
+          <div class="viewport" id="viewport" tabindex="0" aria-label="Scrollable connector; use arrow keys to navigate pins"><div id="connector-mount"></div></div>
+          <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+          <div class="connector-footer"><span>Hover to inspect · Click / tap to pin</span><span>← → navigate <kbd>Esc</kbd> clear</span></div>
+        </div>
+        <div class="legend" id="legend" aria-label="Pin color legend"></div>
+        <div class="lane-guide"><span class="guide-icon">⇄</span><div><h3 id="lane-heading">Two pairs. One lane.</h3><p id="lane-description">Each lane has a separate transmit and receive differential pair. PET = motherboard TX → card RX; PER = card TX → motherboard RX.</p><div id="lane-pins" class="related"></div></div></div>
+        <div class="notice"><b>Before you probe</b><p>Disconnect all power before resistance tests. Avoid bridging adjacent contacts. A resistance reading alone does not establish a fault.</p></div>
+        <details class="result-section"><summary id="results-heading">Browse matching contacts</summary><div id="results" class="results"></div></details>
+      </section>
+      <aside class="detail-panel" aria-label="Selected pin information"><div class="panel-heading"><span class="eyebrow">CONTACT INSPECTOR</span><button id="clear" aria-label="Clear selected pin">×</button></div><div id="details" aria-live="polite"></div></aside>
+    </div>
+    <footer><span>PCIe x16 Interactive Pinout & Repair Assistant · MIT</span><span><a href="docs/SOURCES.md">Sources</a> · <a href="docs/PINOUT_NOTES.md">Pinout notes</a></span></footer>
+  </main>
+  <dialog id="help"><form method="dialog"><button class="dialog-close" aria-label="Close help">×</button></form><p class="eyebrow">WORKBENCH REFERENCE</p><h2>Orientation comes first.</h2><p>This is a view of the <b>add-in card edge</b>, with the contacts pointing down toward the motherboard slot. It is not a top view of a motherboard socket.</p><p><b>Front = component side B:</b> bracket / I/O on the left, B1 nearest the bracket. <b>Back = solder side A:</b> turn the PCB around its vertical axis; bracket on the right, A1 nearest the bracket. The key is between contacts 11 and 12 on both sides. Component placement on modern cards is not a reliable orientation cue.</p><p>Hover or focus a contact for a tooltip and detail preview. Click, tap or press Enter to lock it; click again to release it. Related pins automatically open the correct side. Search and filters cover both sides; use the results list to jump to a hidden-side contact. The lane picker isolates all four contacts of a lane.</p><p><b>Both A/B</b> shows component B above and mirrored solder A below. Each row is a separate physical PCB view. Related-pin selection keeps both rows visible. On mobile, the <b>Contact close-up</b> magnifies the locked contact and its neighbors; tap a neighbor or use Previous / Next in visual order. Locate scrolls the full connector to your selection. Hover previews do not move the close-up.</p><p>Basic mode shows the pin, signal and function. Repair mode adds electrical information, measurements, warnings and related contacts. All directions explicitly name the motherboard and add-in card.</p><p><b>Revision scope:</b> choose the documented CEM 1.1 map or the CEM 4.0 v0.9 draft map, which assigns B12 to CLKREQ# and B30 to PWRBRK#. This is not a claim of certification against the current PCI-SIG revision. Optional functions and board routing must be checked against your hardware schematic.</p><h3>Keyboard shortcuts</h3><p><kbd>←</kbd> / <kbd>→</kbd> move in visual order · <kbd>Enter</kbd> / <kbd>Space</kbd> select a focused pin · <kbd>Esc</kbd> clear · <kbd>F</kbd> front · <kbd>B</kbd> back · <kbd>D</kbd> both A/B · <kbd>/</kbd> search · <kbd>?</kbd> help. Shortcuts are inactive while typing.</p><h3>Measurement safety</h3><p>Disconnect mains, auxiliary GPU power and any batteries before resistance measurements; wait for capacitors to discharge. Standby power can remain present when a PC is soft-off. Use insulated probes and avoid shorting adjacent fingers. PCIe data and reference clock pairs require suitable high-bandwidth differential equipment; a multimeter cannot validate signal quality. No universal GPU resistance thresholds are provided.</p><p>This is an auxiliary diagnostic reference, not a substitute for schematics, training or the licensed specification. <a href="docs/SOURCES.md">Read source provenance and limitations</a>.</p></dialog>
+  <noscript>This application needs JavaScript enabled. It uses local scripts only.</noscript>
+</body>
+</html>
